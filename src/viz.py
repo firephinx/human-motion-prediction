@@ -5,6 +5,7 @@ import data_utils
 import numpy as np
 import h5py
 import os
+from move_pepper import Pepper
 from mpl_toolkits.mplot3d import Axes3D
 
 class Ax3DPose(object):
@@ -22,7 +23,12 @@ class Ax3DPose(object):
     self.I   = np.array([1,2,3,1,7,8,1, 13,14,15,14,18,19,14,26,27])-1
     self.J   = np.array([2,3,4,7,8,9,13,14,15,16,18,19,20,26,27,28])-1
     # Left / right indicator
-    self.LR  = np.array([1,1,1,0,0,0,0, 0, 0, 0, 0, 0, 0, 1, 1, 1], dtype=bool)
+    self.LR = np.array([1,1,1,0,0,0,0, 0, 0, 0, 0, 0, 0, 1, 1, 1], dtype=bool)
+
+    # self.I   = np.array([1,2,3,4,5,1,7,8,9, 10,1, 1, 13,14,15,16,14,18,19,20,21,21,21,14,26,27,28,29,29])-1
+    # self.J   = np.array([2,3,4,5,6,7,8,9,10,11,13,12,14,15,16,17,18,19,20,21,22,23,24,26,27,28,29,30,31])-1
+    # # Left / right indicator
+    # self.LR  = np.array([1,1,1,1,1,0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1], dtype=bool)
     self.ax = ax
 
     vals = np.zeros((32, 3))
@@ -34,6 +40,8 @@ class Ax3DPose(object):
       y = np.array( [vals[self.I[i], 1], vals[self.J[i], 1]] )
       z = np.array( [vals[self.I[i], 2], vals[self.J[i], 2]] )
       self.plots.append(self.ax.plot(x, y, z, lw=2, c=lcolor if self.LR[i] else rcolor))
+
+    self.pepper = Pepper()
 
     self.ax.set_xlabel("x")
     self.ax.set_ylabel("y")
@@ -70,3 +78,5 @@ class Ax3DPose(object):
     self.ax.set_ylim3d([-r+yroot, r+yroot])
 
     self.ax.set_aspect('equal')
+
+    self.pepper.movePepper(vals)
